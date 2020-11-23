@@ -1,71 +1,111 @@
 Attribute VB_Name = "PrintOutSerial"
 Option Explicit
 
-Sub PrintSerial()
+Sub PrintOutSerial()
     
+    '
     Dim msg As String
     msg = _
-        "印刷範囲を指定してください。" & vbCrLf & _
-        "'1 から 3' -> '1-3'" & vbCrLf & _
-        "'1 と 3 と 5' -> '1,3,5'" & vbCrLf & _
-        "'1 と 3 から 5' -> '1,3-5'"
+        "印刷範囲を入力してください。" & vbCrLf & _
+        "1 から 3 -> '1-3'" & vbCrLf & _
+        "1 と 3 と 5 -> '1,3,5'" & vbCrLf & _
+        "1 から 3 と 5 -> '1-3,5'"
     
-    Dim str As String
-    str = Application.InputBox(msg, Type:=2)
+    '
+    Do
+        Dim str As String
+        str = Application.InputBox(msg, Type:=2) '-18--16,-10--12,-6,-4-2,4-1,6-8
+        
+        If str = "False" Then Exit Sub
+    Loop While str = ""
     
-    If str = "False" Then Exit Sub
+    Dim res As Variant
+    res = ConvertToNumArray(str)
     
-    Debug.Print str
+    Debug.Print ""
     
-    Dim tmp As String
-    tmp = str
-    tmp = Replace(tmp, " ", "")
-    tmp = Replace(tmp, ",", "")
-    tmp = Replace(tmp, "-", "")
+    '
+    Dim CL As Range
+    Set CL = SetRangeWithInputBox("印刷範囲を入力するセルをクリックしてください。")
     
-    Debug.Print tmp
-    
-    If Not IsNumeric(tmp) Then Exit Sub
-    
-    
-    Dim v As Variant
-    v = Split(str, ",")
-    
+    '
     Dim printCount As Long
-    printCount = 0
+    printCount = UBound(res) - LBound(res) + 1
+    
+    '
+    Dim confirmationAnswer As Long
+    confirmationAnswer = MsgBox(str & vbCrLf & printCount & "枚印刷します。" & vbCrLf & "実行しますか？", vbYesNo)
+    If confirmationAnswer = vbNo Then Exit Sub
+    
+    '
+    Dim i As Long
+    For i = LBound(res) To UBound(res)
+        CL.Value = res(i)
+'        ActiveSheet.PrintOut
+        Debug.Print res(i)
+    Next i
+    
+End Sub
+
+Function SetRangeWithInputBox(prompt_message As String) As Range
+
+    On Error GoTo ErrorHandle
+    
+    Set SetRangeWithInputBox = Application.InputBox(prompt_message, Type:=8)
+    Exit Function
+    
+ErrorHandle:
+    Set SetRangeWithInputBox = Nothing
+    
+End Function
+
+Function ConvertToNumArray(num_string As String) As Variant
+    
+    Dim strArray As Variant
+    strArray = Split(num_string, ",")
+        
+    Dim result() As Variant
+    Dim n As Long
+    n = 0
     
     Dim i As Long
-    For i = LBound(v) To UBound(v)
+    For i = LBound(strArray) To UBound(strArray)
         
-        Dim tmp2 As String
-        tmp2 = Replace(v(i), "-", "")
+        ' split with the first hyphen after the first letter
+        Dim splitPosition As Long
+        splitPosition = InStr(2, strArray(i), "-")
         
-        If v(i) = tmp2 Then
-            If Not IsNumeric(v(i)) Then GoTo Continue
-            
-            Debug.Print CLng(v(i))
-            printCount = printCount + 1
-        Else
-            Dim v2 As Variant
-            v2 = Split(v(i), "-")
-            
-            If UBound(v2) > 1 Then GoTo Continue
-            If Not IsNumeric(v2(0)) Then GoTo Continue
-            If Not IsNumeric(v2(1)) Then GoTo Continue
-            
-            Debug.Print CLng(v2(0))
-            Debug.Print CLng(v2(1))
-            
-            Dim j As Long
-            For j = CLng(v2(0)) To CLng(v2(1))
-                printCount = printCount + 1
-            Next j
-            
+        If splitPosition = 0 Then
+            ReDim Preserve result(n)
+            result(n) = CLng(strArray(i))
+            n = n + 1
+            GoTo Continue
         End If
+        
+        Dim strFrom As String, strTo As String
+        strFrom = Mid(strArray(i), 1, splitPosition - 1)
+        strTo = Mid(strArray(i), splitPosition + 1)
+        
+        If Not IsNumeric(strFrom) Then GoTo Continue
+        If Not IsNumeric(strTo) Then GoTo Continue
+        
+        Dim forStep As Long
+        If CLng(strFrom) <= CLng(strTo) Then
+            forStep = 1
+        Else
+            forStep = -1
+        End If
+        
+        Dim j As Long
+        For j = CLng(strFrom) To CLng(strTo) Step forStep
+            ReDim Preserve result(n)
+            result(n) = j
+            n = n + 1
+        Next j
         
 Continue:
     Next i
     
-    MsgBox str & vbCrLf & printCount & "枚印刷します。" & vbCrLf & "実行しますか？", vbYesNo
+    ConvertToNumArray = result
     
-End Sub
+End Function
