@@ -3,7 +3,6 @@ Option Explicit
 
 Sub PrintOutSerial()
     
-    '
     Dim promptMessage As String
     promptMessage = _
         "Input numbers to use for printing." & vbCrLf & _
@@ -14,25 +13,29 @@ Sub PrintOutSerial()
     Dim defaultValue As String
     defaultValue = ""
     
-    '
     Do
         Do
-            Dim str As String
-            str = Application.InputBox(promptMessage, Type:=2, Default:=defaultValue)
-'            str = "-18--16,-10--12,-6,-4-2,4-1,6-8"
-'            str = "--18--16,--10--12,-6,-4-2,4-1,6-8"
+            ' uses InputBox to ask numbers to use for printing.
+            ' repeats asking while input is empty.
+            ' exits if 'Cancel' is selected or Esc is typed.
+            Dim numberString As String
+            numberString = Application.InputBox(promptMessage, Type:=2, Default:=defaultValue)
             
-            If str = "False" Then Exit Sub
-        Loop While str = ""
+            If numberString = "False" Then Exit Sub
+        Loop While numberString = ""
         
-        Dim res As Variant
-        res = ConvertToNumArray(str)
+        ' converts the number string to number array.
+        ' repeats asking while the number string couldn't converted successfully.
+        Dim numberArray As Variant
+        numberArray = ConvertToNumArray(numberString)
         
-        If IsNull(res) Then defaultValue = str
+        If IsNull(numberArray) Then defaultValue = numberString
         
-    Loop While IsNull(res)
+    Loop While IsNull(numberArray)
     
-    '
+    ' asks a cell to input the numbers in.
+    ' only ONE cell can be selected.
+    ' exits if 'Cancel' is selected or Esc is typed.
     Do
         Dim CL As Range
         Set CL = SetRangeWithInputBox("Click a cell to input the numbers." & vbCrLf & "Only ONE cell can be selected.")
@@ -48,21 +51,19 @@ Sub PrintOutSerial()
     Dim WS As Worksheet
     Set WS = ActiveSheet
     
-    '
     Dim printCount As Long
-    printCount = UBound(res) - LBound(res) + 1
+    printCount = UBound(numberArray) - LBound(numberArray) + 1
     
-    '
     Dim confirmationAnswer As Long
-    confirmationAnswer = MsgBox("""str""" & vbCrLf & printCount & " sheet(s) will be printed." & vbCrLf & "Start Printing?", vbYesNo)
+    confirmationAnswer = MsgBox("'" & numberString & "'" & vbCrLf & printCount & " sheet(s) will be printed." & vbCrLf & "Start Printing?", vbYesNo)
     If confirmationAnswer = vbNo Then Exit Sub
     
-    '
+    ' prints out.
     Dim i As Long
-    For i = LBound(res) To UBound(res)
-        CL.Value = res(i)
+    For i = LBound(numberArray) To UBound(numberArray)
+        CL.Value = numberArray(i)
         WS.PrintOut
-        Debug.Print res(i)
+        Debug.Print Now, numberArray(i)
     Next i
     
 End Sub
@@ -91,7 +92,7 @@ Function ConvertToNumArray(num_string As String) As Variant
     Dim i As Long
     For i = LBound(strArray) To UBound(strArray)
         
-        ' get the position of the first hyphen after the first letter
+        ' gets the position of the first hyphen after the first letter.
         Dim firstHyphenPosition As Long
         firstHyphenPosition = InStr(2, strArray(i), "-")
         
@@ -106,7 +107,7 @@ Function ConvertToNumArray(num_string As String) As Variant
             GoTo Continue
         End If
         
-        ' split with the first hyphen after the first letter
+        ' splits with the first hyphen after the first letter.
         Dim strFrom As String, strTo As String
         strFrom = Mid(strArray(i), 1, firstHyphenPosition - 1)
         strTo = Mid(strArray(i), firstHyphenPosition + 1)
