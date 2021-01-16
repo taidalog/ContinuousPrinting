@@ -1,7 +1,8 @@
 Attribute VB_Name = "ContinuousPrinting"
 Option Explicit
+Option Private Module
 
-Sub PrintOutSerial()
+Public Sub PrintOutContinuously()
     
     Dim promptMessage As String
     promptMessage = _
@@ -68,7 +69,7 @@ Sub PrintOutSerial()
     
 End Sub
 
-Function SetRangeWithInputBox(prompt_message As String) As Range
+Private Function SetRangeWithInputBox(prompt_message As String) As Range
 
     On Error GoTo ErrorHandle
     
@@ -80,7 +81,7 @@ ErrorHandle:
     
 End Function
 
-Function ConvertToNumArray(num_string As String) As Variant
+Private Function ConvertToNumArray(num_string As String) As Variant
     
     Dim strArray As Variant
     strArray = Split(num_string, ",")
@@ -147,3 +148,33 @@ Continue:
     ConvertToNumArray = result
     
 End Function
+
+Public Sub cp()
+    ' alias
+    Call PrintOutContinuously
+End Sub
+
+Public Sub AddToContextMenu_ContinuousPrinting()
+    
+    With Application.CommandBars
+        Dim i As Long
+        For i = 1 To .Count
+            
+            With .Item(i)
+                If .Name = "Cell" Then
+                    
+                    With .Controls.Add(Type:=msoControlButton, Temporary:=True)
+                        .BeginGroup = True
+                        .Caption = "&ContinuousPrinting"
+                        .OnAction = ThisWorkbook.Name & "!PrintOutContinuously"
+                        
+                    End With
+                    
+                End If
+            End With
+            
+        Next i
+        
+    End With
+    
+End Sub
