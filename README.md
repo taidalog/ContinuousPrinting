@@ -2,6 +2,9 @@
 
 VBA script to print out Excel worksheet continuously
 
+1. [Install](#Install)
+1. [How to use](#How%20to%20use)
+
 ## Install
 Follow these steps: 
 1. Save 'ContinuousPrinting.bas' to your computer.
