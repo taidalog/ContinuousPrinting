@@ -2,7 +2,7 @@
 
 VBA script to print out Excel worksheet continuously
 
-## How to use
+## Install
 Follow these steps: 
 1. Save 'ContinuousPrinting.bas' to your computer.
 1. Import 'ContinuousPrinting.bas' to any Excel workbook.  
@@ -21,3 +21,8 @@ End Sub
 ```
 4. Save workbook and reopen.
 4. Now, 'ContinuousPrinting' should appear in the menu. This menu remains while the workbook is open.
+
+## How to use
+1. Input numbers to use for printing.
+1. Click a cell to input the numbers. **Only one cell** can be selected.
+1. Click 'Yes' on confirm window.
