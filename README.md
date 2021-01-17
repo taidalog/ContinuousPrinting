@@ -1,5 +1,7 @@
 # ContinuousPrinting
 
+[Japanese README](README.ja.md)
+
 1. [About](#About)
 1. [Install](#Install)
 1. [How to use](#How-to-use)
@@ -14,10 +16,10 @@ Follow these steps:
 1. Save 'ContinuousPrinting.bas' to your computer.
 1. Import 'ContinuousPrinting.bas' to any Excel workbook.  
 Make it sure that the workbook has extension '**.xlsm**', '**.xlam**' (or '.xls').
-1. Press Alt + F8 and type '**cp**' (for **C**ontinuous**P**rinting).
+1. Press 'Alt + F8' and type '**cp**' (for **C**ontinuous**P**rinting).
 
 You can add this macro to the context menu (right-click menu):
-1. Open VBE (press Alt + F11).
+1. Open VBE (press 'Alt + F11').
 1. Open 'VBAProject (WORKBOOK_NAME)' -> 'Misrosoft Excel Object' -> 'ThisWorkbook'.
 1. Add the code below.  
 If `Private Sub Workbook_Open()` already exists, just add `Call AddToContextMenu_ContinuousPrinting` before `End Sub`.
