@@ -1,9 +1,14 @@
 # ContinuousPrinting
 
-VBA script to print out Excel worksheet continuously
 
+1. [About](#About)
 1. [Install](#Install)
-1. [How to use](#How%20to%20use)
+1. [How to use](#How-to-use)
+1. [Future features](#Future-features)
+
+## About
+VBA script to print out Excel worksheet continuously.  
+One of the most typical situations for continuous printing may be that you type 1 in A1 cell and print it out, type 2 in A1 cell and ptint it out, 3 in A1 and print it out. This script helps repeat this task. You type numbers like '1-3' for 1 to 3, click a cell in which the numbers will be input, then printing will be done for all the numbers.
 
 ## Install
 Follow these steps: 
@@ -29,3 +34,7 @@ End Sub
 1. Input numbers to use for printing.
 1. Click a cell to input the numbers. **Only one cell** can be selected.
 1. Click 'Yes' on confirm window.
+
+## Future features
+- [ ] Support for inputting text
+- [ ] Support for inputting from cell range
